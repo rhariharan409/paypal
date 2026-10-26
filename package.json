@@ -10,6 +10,13 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build": "cd backend && npm run build && cd ../frontend && npm run build"
   },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
+  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   }

@@ -69,9 +69,15 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`================================================================`);
-  console.log(`🛡️  AEGIS PAY BACKEND RUNNING ON http://localhost:${PORT}`);
-  console.log(`   "Your AI agents can make decisions. Only you control the money."`);
-  console.log(`================================================================`);
-});
+// Export app for serverless environments (Vercel)
+export default app;
+export { app };
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`================================================================`);
+    console.log(`🛡️  AEGIS PAY BACKEND RUNNING ON http://localhost:${PORT}`);
+    console.log(`   "Your AI agents can make decisions. Only you control the money."`);
+    console.log(`================================================================`);
+  });
+}
