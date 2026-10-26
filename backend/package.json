@@ -2,7 +2,7 @@
   "name": "aegis-pay-backend",
   "version": "1.0.0",
   "description": "AEGIS PAY Central Governance, Security & Payment Orchestration Engine",
-  "main": "src/index.ts",
+  "main": "dist/bundle.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc && esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/bundle.js",

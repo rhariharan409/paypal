@@ -6,7 +6,7 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "dist/bundle.js"
+      "entrypoint": "index.js"
     }
   },
   "rewrites": [
