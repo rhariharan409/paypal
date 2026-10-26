@@ -37,7 +37,9 @@ export interface DatabaseState {
   };
 }
 
-const DATA_DIR = path.resolve(__dirname, '../../data');
+import os from 'os';
+
+const DATA_DIR = process.env.VERCEL ? os.tmpdir() : path.resolve(__dirname, '../../data');
 const DATA_FILE = path.join(DATA_DIR, 'aegis_data.json');
 
 export class DatabaseStore {
@@ -58,21 +60,25 @@ export class DatabaseStore {
   }
 
   private ensureDataDirectory() {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    try {
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+    } catch (err) {
+      // Gracefully handle read-only environments
     }
   }
 
   private loadOrSeed() {
-    if (fs.existsSync(DATA_FILE)) {
-      try {
+    try {
+      if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
         this.state = JSON.parse(raw);
         console.log('[AEGIS DB] Loaded existing database state from disk.');
         return;
-      } catch (err) {
-        console.warn('[AEGIS DB] Error reading data file, initializing fresh seed data.', err);
       }
+    } catch (err) {
+      console.warn('[AEGIS DB] Using fresh in-memory seed dataset.');
     }
 
     this.resetToSeed();
@@ -89,7 +95,8 @@ export class DatabaseStore {
       this.ensureDataDirectory();
       fs.writeFileSync(DATA_FILE, JSON.stringify(this.state, null, 2), 'utf-8');
     } catch (err) {
-      console.error('[AEGIS DB] Failed to persist data to disk:', err);
+      // In serverless environments without writable disk, in-memory state persists across warm invocations
+      console.warn('[AEGIS DB] In-memory persistence used (read-only environment)');
     }
   }
 

@@ -35,7 +35,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Health check
-app.get('/api/health', (req: Request, res: Response) => {
+app.get(['/api', '/api/health'], (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
     product: 'AEGIS PAY',
@@ -72,8 +72,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 // Export app for serverless environments (Vercel)
 export default app;
 export { app };
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = app;
+  (module.exports as any).default = app;
+}
 
-if (!process.env.VERCEL) {
+if (!process.env.VERCEL && typeof require !== 'undefined' && require.main === module) {
   app.listen(PORT, () => {
     console.log(`================================================================`);
     console.log(`🛡️  AEGIS PAY BACKEND RUNNING ON http://localhost:${PORT}`);
